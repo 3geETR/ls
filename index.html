@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GitHub Link Kısaltıcı</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; }
+        input, button { padding: 10px; margin: 5px; width: 80%; display: block; }
+    </style>
+</head>
+<body>
+    <h1>GitHub ile Link Kısalt</h1>
+    <input type="url" id="longUrl" placeholder="Uzun URL (Örnek: https://ornek.com)">
+    <input type="text" id="shortCode" placeholder="Kısa Kod (Örnek: haber)">
+    <button onclick="generateCode()">HTML Kodu Oluştur</button>
+    <div id="result"></div>
+
+    <script>
+        function generateCode() {
+            const longUrl = document.getElementById('longUrl').value;
+            const shortCode = document.getElementById('shortCode').value;
+            
+            const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="refresh" content="0; url='${longUrl}'" />
+</head>
+<body></body>
+</html>`;
+
+            const githubUrl = `https://github.com/3geetr/ls/new/main?filename=${shortCode}.html&value=${encodeURIComponent(htmlContent)}`;
+            
+            document.getElementById('result').innerHTML = `
+                <h3>Adımlar:</h3>
+                <ol>
+                    <li><a href="${githubUrl}" target="_blank">Bu linke tıkla</a></li>
+                    <li>GitHub'da "Commit new file" butonuna bas</li>
+                </ol>
+                <p>Kısa Link: <code>https://3gee.is-a.dev/ls/${shortCode}</code></p>
+            `;
+        }
+    </script>
+</body>
+</html>
