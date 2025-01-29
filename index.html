@@ -188,6 +188,75 @@
                 width: 100%;
             }
         }
+
+        .notification-container {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 1000;
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .notification {
+            background: var(--card-bg);
+            color: var(--text);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease-out;
+            border-left: 4px solid transparent;
+            opacity: 0.95;
+            transition: all 0.3s ease;
+        }
+
+        .notification:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .notification.success {
+            border-left-color: #10b981;
+        }
+
+        .notification.error {
+            border-left-color: #ef4444;
+        }
+
+        .notification.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .notification i {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex-grow: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 0.95;
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -244,6 +313,8 @@
             </div>
         </div>
     </div>
+    
+    <div class="notification-container" id="notificationContainer"></div>
 
     <script>
         // Ayarları Buradan Değiştirin ↓
@@ -316,6 +387,54 @@
             navigator.clipboard.writeText(shortUrl)
                 .then(() => alert("Link panoya kopyalandı! 📋"))
                 .catch(() => alert("Kopyalama başarısız! ❌"));
+        }
+
+        function showNotification(message, type = 'success', duration = 4000) {
+            const icons = {
+                success: 'fa-circle-check',
+                error: 'fa-circle-xmark',
+                warning: 'fa-triangle-exclamation'
+            };
+
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas ${icons[type]}"></i>
+                <div class="notification-content">${message}</div>
+            `;
+
+            notification.addEventListener('click', () => {
+                notification.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            });
+
+            const container = document.getElementById('notificationContainer');
+            container.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, duration);
+        }
+
+        // Değiştirilen alert'ler
+        function validateInputs(url, code) {
+            if(!url || !code) {
+                showNotification('Lütfen tüm alanları doldurun! 🚨', 'error');
+                return false;
+            }
+            if(!isValidUrl(url)) {
+                showNotification('Geçersiz URL formatı! 🌐', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        function copyLink() {
+            const shortUrl = document.getElementById('shortLinkText').textContent;
+            navigator.clipboard.writeText(shortUrl)
+                .then(() => showNotification('Link panoya kopyalandı! 📋', 'success'))
+                .catch(() => showNotification('Kopyalama başarısız! ❌', 'error'));
         }
     </script>
 </body>
