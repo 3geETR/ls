@@ -1,24 +1,221 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <title>GitHub Link Kısaltıcı</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyLink - Modern URL Kısaltıcı</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; }
-        input, button { padding: 10px; margin: 5px; width: 80%; display: block; }
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --background: #f8fafc;
+            --text: #1e293b;
+            --card-bg: #ffffff;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #0f172a;
+                --text: #f8fafc;
+                --card-bg: #1e293b;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 1rem;
+        }
+
+        .container {
+            background: var(--card-bg);
+            max-width: 600px;
+            width: 100%;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: var(--text);
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        button i {
+            font-size: 1.2rem;
+        }
+
+        .result-box {
+            margin-top: 2rem;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 2px dashed var(--primary);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .steps {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 0.75rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .title {
+                font-size: 1.8rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>GitHub ile Link Kısalt</h1>
-    <input type="url" id="longUrl" placeholder="Uzun URL (Örnek: https://ornek.com)">
-    <input type="text" id="shortCode" placeholder="Kısa Kod (Örnek: haber)">
-    <button onclick="generateCode()">HTML Kodu Oluştur</button>
-    <div id="result"></div>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">SkyLink</h1>
+            <p>Modern GitHub-Powered URL Kısaltıcı</p>
+        </div>
+
+        <div class="input-group">
+            <input type="url" id="longUrl" placeholder="🔗 Uzun URL'nizi girin...">
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="shortCode" placeholder="🎯 Özel Kodunuz (örn: haber)">
+        </div>
+
+        <button onclick="generateCode()">
+            <i class="fas fa-rocket"></i>
+            Link Oluştur
+        </button>
+
+        <div id="resultContainer" class="result-box" style="display: none;">
+            <h3>🎉 Başarılı! Adımlar:</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <a id="githubLink" target="_blank" style="color: var(--primary); text-decoration: none;">
+                            Bu bağlantıya tıkla <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>"Commit new file" butonuna bas</div>
+                </div>
+            </div>
+            <p style="margin-top: 1rem; opacity: 0.8;">
+                Kısa Linkiniz: <code id="shortLink"></code>
+            </p>
+        </div>
+    </div>
 
     <script>
         function generateCode() {
             const longUrl = document.getElementById('longUrl').value;
             const shortCode = document.getElementById('shortCode').value;
             
+            if(!longUrl || !shortCode) {
+                alert('Lütfen tüm alanları doldurun!');
+                return;
+            }
+
             const htmlContent = `
 <!DOCTYPE html>
 <html>
@@ -28,16 +225,13 @@
 <body></body>
 </html>`;
 
-            const githubUrl = `https://github.com/3geetr/ls/new/main?filename=${shortCode}.html&value=${encodeURIComponent(htmlContent)}`;
+            const githubUser = "KULLANICI_ADINIZ";
+            const repoName = "REPO_ADI";
+            const githubUrl = `https://github.com/${githubUser}/${repoName}/new/main?filename=${shortCode}.html&value=${encodeURIComponent(htmlContent)}`;
             
-            document.getElementById('result').innerHTML = `
-                <h3>Adımlar:</h3>
-                <ol>
-                    <li><a href="${githubUrl}" target="_blank">Bu linke tıkla</a></li>
-                    <li>GitHub'da "Commit new file" butonuna bas</li>
-                </ol>
-                <p>Kısa Link: <code>https://3gee.is-a.dev/ls/${shortCode}</code></p>
-            `;
+            document.getElementById('resultContainer').style.display = 'block';
+            document.getElementById('githubLink').href = githubUrl;
+            document.getElementById('shortLink').textContent = `https://${githubUser}.github.io/${repoName}/${shortCode}`;
         }
     </script>
 </body>
